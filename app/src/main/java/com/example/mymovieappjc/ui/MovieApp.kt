@@ -55,7 +55,10 @@ fun MovieApp(mainViewModel: MainViewModel) {
             mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED)
         },
         onSearchClicked = { Log.d("Search Text", it) },
-        onSearchTriggered = { mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED) }
+        onSearchTriggered = {
+            mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+        },
+        mainViewModel = mainViewModel
     )
 }
 
@@ -72,7 +75,8 @@ fun MainScreen(
     onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
-    onSearchTriggered: () -> Unit
+    onSearchTriggered: () -> Unit,
+    mainViewModel: MainViewModel
 ) {
 
 
