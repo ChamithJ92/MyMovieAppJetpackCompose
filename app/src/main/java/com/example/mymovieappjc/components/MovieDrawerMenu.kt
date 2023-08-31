@@ -1,32 +1,37 @@
 package com.example.mymovieappjc.components
 
-import android.provider.CalendarContract.Colors
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mymovieappjc.colors.createGradientBrush
+import androidx.navigation.NavHostController
 import com.example.mymovieappjc.model.DrawerMenuData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun MovieDrawerMenu(scrollState: ScrollState) {
+fun MovieDrawerMenu(
+    scrollState: ScrollState,
+    navController: NavHostController,
+    scope: CoroutineScope,
+    scaffoldState: DrawerState
+) {
 
     val menuList = listOf(
         DrawerMenuData.Divider,
@@ -36,6 +41,9 @@ fun MovieDrawerMenu(scrollState: ScrollState) {
         DrawerMenuData.NowPlayingMovies,
         DrawerMenuData.UpcomingMovies
     )
+
+    //val currentRoute = currentRoute(navController)
+
     Column(modifier = Modifier.verticalScroll(scrollState)) {
         Text(
             text = "Welcome.",
@@ -61,7 +69,12 @@ fun MovieDrawerMenu(scrollState: ScrollState) {
                 }
 
                 else -> {
-                    MovieDrawerItem(item = item)
+                    MovieDrawerItem(
+                        item = item, { item.route },
+                        navController = navController,
+                        scope = scope,
+                        scaffoldState = scaffoldState
+                    )
                 }
             }
         }
@@ -69,12 +82,28 @@ fun MovieDrawerMenu(scrollState: ScrollState) {
 }
 
 @Composable
-fun MovieDrawerItem(item: DrawerMenuData) {
+fun MovieDrawerItem(
+    item: DrawerMenuData,
+    onItemClick: (DrawerMenuData) -> Unit,
+    navController: NavHostController,
+    scope: CoroutineScope,
+    scaffoldState: DrawerState
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .padding(top = 16.dp)
+            .clickable {
+                Log.e("=====", "$item")
+                onItemClick(item)
+                navController.navigate("Detail Screen") {
+                    launchSingleTop = true
+                }
+                scope.launch {
+                    scaffoldState.close()
+                }
+            }
     ) {
         Image(
             imageVector = item.icon!!,

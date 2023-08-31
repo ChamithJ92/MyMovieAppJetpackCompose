@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,20 +20,30 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.mymovieappjc.State.SearchWidgetState
 import com.example.mymovieappjc.colors.createGradientBrush
 import com.example.mymovieappjc.components.MainAppBar
 import com.example.mymovieappjc.components.MovieDrawerMenu
+import com.example.mymovieappjc.model.DrawerMenuData
+import com.example.mymovieappjc.ui.screens.HomeScreen
+import com.example.mymovieappjc.ui.screens.MovieDetailScreen
+import com.example.mymovieappjc.ui.screens.PopularMovieScreen
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieApp(mainViewModel: MainViewModel) {
 
@@ -42,6 +54,7 @@ fun MovieApp(mainViewModel: MainViewModel) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    val topBarState = rememberSaveable { (mutableStateOf(true)) }
     MainScreen(
         drawerState = drawerState,
         navController = navController,
@@ -58,12 +71,12 @@ fun MovieApp(mainViewModel: MainViewModel) {
         onSearchTriggered = {
             mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
         },
-        mainViewModel = mainViewModel
+        mainViewModel = mainViewModel,
+        topBarState = topBarState
     )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     drawerState: DrawerState,
@@ -76,12 +89,14 @@ fun MainScreen(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
     onSearchTriggered: () -> Unit,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    topBarState: MutableState<Boolean>
 ) {
 
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = true,
         drawerContent = {
             val gradientColorList = listOf(
                 Color(0xCE12A2CE),
@@ -102,7 +117,10 @@ fun MainScreen(
                 drawerContainerColor = Color.Transparent
             ) {
                 val modifier = Modifier
-                MovieDrawerMenu(scrollState)
+                MovieDrawerMenu(
+                    scrollState, navController = navController,
+                    scope = scope, scaffoldState = drawerState
+                )
             }
         },
         content = {
@@ -115,16 +133,58 @@ fun MainScreen(
                     onTextChange = onTextChange,
                     onCloseClicked = onCloseClicked,
                     onSearchClicked = onSearchClicked,
-                    onSearchTriggered = onSearchTriggered
+                    onSearchTriggered = onSearchTriggered,
+                    topBarState = topBarState
                 )
             }) {
 
-                Navigation(navController)
+                Navigation(
+                    navController = navController,
+                    scrollState = scrollState,
+                    viewModel = mainViewModel,
+                    paddingValues = it,
+                    topBarState = topBarState
+                )
             }
         })
 }
 
 @Composable
-fun Navigation(navController: NavHostController) {
+fun Navigation(
+    navController: NavHostController,
+    scrollState: ScrollState,
+    viewModel: MainViewModel,
+    paddingValues: PaddingValues,
+    topBarState: MutableState<Boolean>
+) {
+    val loading by viewModel.isLoading.collectAsState()
+    val error by viewModel.isError.collectAsState()
+    val popularMovieResponse = viewModel.popularMovieResponse.collectAsState()
 
+    Log.e("PopularMovieResponse: ", "$popularMovieResponse")
+
+    NavHost(
+        navController = navController, startDestination = DrawerMenuData.Home.route!!,
+        modifier = Modifier.padding(paddingValues = paddingValues)
+    ) {
+        composable(route = DrawerMenuData.Home.route) {
+            HomeScreen()
+            topBarState.value = true
+        }
+        composable(route = DrawerMenuData.PopularMovies.route!!) {
+            topBarState.value = false
+            PopularMovieScreen()
+        }
+
+        composable(route = "Detail Screen") { navBackStackEntry ->
+            topBarState.value = false
+            MovieDetailScreen(scrollState = scrollState, navController = navController)
+        }
+    }
 }
+//
+//@Composable
+//public fun currentRoute(navController: NavHostController): String? {
+//    val navBackStackEntry by navController.currentBackStackEntryAsState()
+//    return navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+//}

@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RemoteDataSource {
 
@@ -16,10 +17,14 @@ object RemoteDataSource {
 
     val logging = HttpLoggingInterceptor()
 
-    private val httpClient = OkHttpClient.Builder().apply {
-        addInterceptor(logging)
+    private val httpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .apply {
         logging.level = HttpLoggingInterceptor.Level.BODY
-        addNetworkInterceptor(logging)
+        addInterceptor(logging)
+        //addNetworkInterceptor(logging)
     }.build()
 
     private val retrofit = Retrofit.Builder()

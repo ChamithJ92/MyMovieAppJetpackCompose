@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.mymovieappjc.State.SearchWidgetState
 import com.example.mymovieappjc.ui.MovieApp
 import com.example.mymovieappjc.ui.theme.MyMovieAppJCTheme
@@ -161,24 +163,27 @@ fun MainAppBar(
     onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
-    onSearchTriggered: () -> Unit
+    onSearchTriggered: () -> Unit,
+    topBarState: MutableState<Boolean>
 ) {
-    when (searchWidgetState) {
-        SearchWidgetState.CLOSED -> {
-            HomeAppBar(
-                drawerState = drawerState,
-                scope = scope,
-                onSearchClicked = onSearchTriggered
-            )
-        }
+    if (topBarState.value) {
+        when (searchWidgetState) {
+            SearchWidgetState.CLOSED -> {
+                HomeAppBar(
+                    drawerState = drawerState,
+                    scope = scope,
+                    onSearchClicked = onSearchTriggered
+                )
+            }
 
-        SearchWidgetState.OPENED -> {
-            SearchAppBar(
-                text = searchTextState,
-                onTextChange = onTextChange,
-                onCloseClicked = onCloseClicked,
-                onSearchClicked = onSearchClicked
-            )
+            SearchWidgetState.OPENED -> {
+                SearchAppBar(
+                    text = searchTextState,
+                    onTextChange = onTextChange,
+                    onCloseClicked = onCloseClicked,
+                    onSearchClicked = onSearchClicked
+                )
+            }
         }
     }
 }
