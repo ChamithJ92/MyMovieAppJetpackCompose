@@ -1,4 +1,4 @@
-package com.example.mymovieappjc.model.response
+package com.example.mymovieappjc.domain.model
 
 data class MovieData(
     val adult: Boolean? = null,

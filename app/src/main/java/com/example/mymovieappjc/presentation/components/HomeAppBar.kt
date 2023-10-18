@@ -1,4 +1,4 @@
-package com.example.mymovieappjc.components
+package com.example.mymovieappjc.presentation.components
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,6 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,10 +34,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.mymovieappjc.State.SearchWidgetState
-import com.example.mymovieappjc.ui.MovieApp
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.mymovieappjc.presentation.search.SearchWidgetState
+import com.example.mymovieappjc.presentation.search.SearchEvent
+import com.example.mymovieappjc.presentation.search.SearchState
 import com.example.mymovieappjc.ui.theme.MyMovieAppJCTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -48,7 +47,7 @@ import kotlinx.coroutines.launch
 fun HomeAppBar(drawerState: DrawerState, scope: CoroutineScope, onSearchClicked: () -> Unit) {
 
     Box(modifier = Modifier.padding(10.dp)) {
-        Card(modifier = Modifier.requiredHeight(50.dp)) {
+        Card(modifier = Modifier.requiredHeight(50.dp),) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -60,16 +59,16 @@ fun HomeAppBar(drawerState: DrawerState, scope: CoroutineScope, onSearchClicked:
                         drawerState.open()
                     }
                 }) {
-                    Icon(Icons.Default.Menu, contentDescription = "Menu")
+                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.Black)
                 }
-                Text(text = "Home", modifier = Modifier.weight(2.0f))
+                Text(text = "Home", modifier = Modifier.weight(2.0f), fontSize = 17.sp, color = Color.Black)
                 IconButton(onClick = {
                     onSearchClicked()
                 }) {
                     Icon(
                         Icons.Default.Search,
                         contentDescription = "Search Icon",
-                        tint = Color.White
+                        tint = Color.Black
                     )
                 }
             }
@@ -80,11 +79,10 @@ fun HomeAppBar(drawerState: DrawerState, scope: CoroutineScope, onSearchClicked:
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(
-
     text: String,
     onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
+    onSearchClicked: () -> Unit
 ) {
     Box(modifier = Modifier.padding(10.dp)) {
         Card(modifier = Modifier.requiredHeight(50.dp)) {
@@ -92,7 +90,7 @@ fun SearchAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                color = Color.Gray
+                color = Color.Transparent
             ) {
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -102,7 +100,8 @@ fun SearchAppBar(
                         Text(
                             text = "Search here..",
                             modifier = Modifier.alpha(1.0f),
-                            color = Color.White
+                            fontSize = 15.sp,
+                            color = Color.Black
                         )
                     },
                     textStyle = TextStyle(fontSize = 18.sp),
@@ -112,7 +111,7 @@ fun SearchAppBar(
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "Search Icon",
-                                tint = Color.White
+                                tint = Color.Black
                             )
                         }
                     },
@@ -127,7 +126,7 @@ fun SearchAppBar(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Close Icon",
-                                tint = Color.White
+                                tint = Color.Black
                             )
                         }
                     },
@@ -136,12 +135,12 @@ fun SearchAppBar(
                     ),
                     keyboardActions = KeyboardActions(
                         onSearch = {
-                            onSearchClicked(text)
+                            onSearchClicked()
                         }
                     ),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
-                        cursorColor = Color.White.copy(alpha = 1.0f),
+                        cursorColor = Color.Black.copy(alpha = 1.0f),
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
@@ -158,13 +157,12 @@ fun SearchAppBar(
 fun MainAppBar(
     drawerState: DrawerState,
     scope: CoroutineScope,
-    searchWidgetState: SearchWidgetState,
-    searchTextState: String,
-    onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
     onSearchTriggered: () -> Unit,
-    topBarState: MutableState<Boolean>
+    topBarState: MutableState<Boolean>,
+    searchTextState: SearchState,
+    searchWidgetState: SearchWidgetState,
+    event: (SearchEvent) -> Unit
 ) {
     if (topBarState.value) {
         when (searchWidgetState) {
@@ -178,11 +176,16 @@ fun MainAppBar(
 
             SearchWidgetState.OPENED -> {
                 SearchAppBar(
-                    text = searchTextState,
-                    onTextChange = onTextChange,
+                    text = searchTextState.searchQuery,
+                    onTextChange = {event(SearchEvent.UpdateSearchQuery(it))},
                     onCloseClicked = onCloseClicked,
-                    onSearchClicked = onSearchClicked
+                    onSearchClicked = { event(SearchEvent.SearchMovie) }
                 )
+
+                searchTextState.movie?.let {
+                    val movies = it.collectAsLazyPagingItems()
+                    Log.e("=====", ""+ movies)
+                }
             }
         }
     }
@@ -192,7 +195,7 @@ fun MainAppBar(
 @Composable
 fun DefaultPreview() {
     MyMovieAppJCTheme {
-        MovieApp(viewModel())
+        //MovieApp(viewModel())
     }
 }
 

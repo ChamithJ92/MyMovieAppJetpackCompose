@@ -1,4 +1,4 @@
-package com.example.mymovieappjc.State
+package com.example.mymovieappjc.presentation.search
 
 enum class SearchWidgetState {
     OPENED,

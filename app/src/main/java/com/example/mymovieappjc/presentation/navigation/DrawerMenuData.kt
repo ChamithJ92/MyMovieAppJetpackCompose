@@ -1,4 +1,4 @@
-package com.example.mymovieappjc.model
+package com.example.mymovieappjc.presentation.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home

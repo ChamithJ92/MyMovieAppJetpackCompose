@@ -1,4 +1,4 @@
-package com.example.mymovieappjc.colors
+package com.example.mymovieappjc.presentation.colors
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset

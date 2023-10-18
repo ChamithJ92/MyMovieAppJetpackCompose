@@ -1,4 +1,6 @@
-package com.example.mymovieappjc.model.response
+package com.example.mymovieappjc.data.remote.dto
+
+import com.example.mymovieappjc.domain.model.MovieData
 
 data class PopularMovieResponse (
     val page: Int? = null,
