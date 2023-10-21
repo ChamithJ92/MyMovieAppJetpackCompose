@@ -128,9 +128,8 @@ fun MainScreen(
         content = {
             val gradientColorList = listOf(
                 Color(0xCE0281A8),
-                Color(0xC301448B),
-                Color(0xE80C2D70),
-                Color(0xE8001066)
+                Color(0xE8000D5F),
+                Color(0xE8000216)
             )
 
             Scaffold(

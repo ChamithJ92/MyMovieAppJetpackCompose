@@ -10,4 +10,17 @@
 
     <color name="status_bar_col">#CE91DAF0</color>
 
+<!--    Text Colors-->
+    <color name="txt_col_1">#FFFFFF</color>
+    <color name="txt_col_2">#E30303</color>
+    <color name="txt_col_3">#010949</color>
+    <color name="txt_col_4">#FFFFFF</color>
+
+<!--    Gradient colors-->
+    <color name="gradient_col_1">#01686C</color>
+    <color name="gradient_col_2">#04E7F0</color>
+
+<!--    Divider Colors-->
+    <color name="divider_col_2">#04E7F0</color>
+
 </resources>
