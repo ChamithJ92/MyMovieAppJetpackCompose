@@ -1,5 +1,9 @@
 package com.example.mymovieappjc.domain.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class MovieData(
     val adult: Boolean? = null,
     val backdrop_path: String? = null,
@@ -21,4 +25,4 @@ data class MovieData(
     val media_type: String? = null,
     val first_air_date: String? = null,
     val origin_country: List<String>? = null,
-)
+): Parcelable

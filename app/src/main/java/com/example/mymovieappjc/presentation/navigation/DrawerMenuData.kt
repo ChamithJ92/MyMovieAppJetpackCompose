@@ -13,18 +13,18 @@ sealed class DrawerMenuData(
     val icon: ImageVector? = null, val title: String? = null,
     val isDivider: Boolean = false
 ){
-    object Home: DrawerMenuData(
-        route = "home",
+    object HomeScreen: DrawerMenuData(
+        route = "homeScreen",
         icon = Icons.Outlined.Home,
         title = "Home"
     )
     object TrendingMovies: DrawerMenuData(
-        route = "home",
+        route = "trendingMovies",
         icon = Icons.Outlined.TrendingUp,
         title = "Trending Movies"
     )
     object PopularMovies: DrawerMenuData(
-        route = "popular_movies",
+        route = "popularMovieScreen",
         icon = Icons.Outlined.Stars,
         title = "Popular Movies"
     )

@@ -13,12 +13,9 @@ class SearchMoviePagingSource(
     private var totalMovieCount = 0
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieData> {
         val page = params.key ?: 1
-        Log.e("Search*****", ""+ searchQuery)
         return try {
-            Log.e("Search*****", ""+ searchQuery)
             val movieResponse = movieApi.getSearchMovies(page = page, searchKey = searchQuery)
             totalMovieCount += movieResponse.results?.size!!
-            Log.e("Search*****", ""+ page)
             val movies = movieResponse.results.distinctBy { it.title } // Remove Duplicate
             LoadResult.Page(
                 data = movies,

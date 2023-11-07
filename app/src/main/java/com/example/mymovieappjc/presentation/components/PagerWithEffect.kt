@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -36,10 +37,11 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlin.math.absoluteValue
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PagerWithEffect(
-    movieData: LazyPagingItems<MovieData>
+    movieData: LazyPagingItems<MovieData>,
+    onClickDetails: (MovieData) -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = 1)
 
@@ -70,6 +72,9 @@ fun PagerWithEffect(
                             stop = 1f,
                             fraction = 1f - pageOffset.coerceIn(0f, 1f)
                         )
+                },
+                onClick = {
+                    onClickDetails(movieData[page]!!)
                 }) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)

@@ -15,7 +15,6 @@ class MoviePagingSource(
         return try {
             val movieResponse = movieApi.getPopularMovie(page = page)
             totalMovieCount += movieResponse.results?.size!!
-            Log.e("*****", ""+ page)
             val movies = movieResponse.results.distinctBy { it.title } // Remove Duplicate
             LoadResult.Page(
                 data = movies,
@@ -23,7 +22,7 @@ class MoviePagingSource(
                 prevKey = null
             )
         }catch (e: Exception){
-            e.printStackTrace()
+            //e.printStackTrace()
             LoadResult.Error(
                 throwable = e
             )

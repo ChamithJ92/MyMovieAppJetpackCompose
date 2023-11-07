@@ -3,8 +3,13 @@ package com.example.mymovieappjc.di
 import com.example.mymovieappjc.data.remote.MovieApi
 import com.example.mymovieappjc.data.remote.repository.MovieRepositoryImpl
 import com.example.mymovieappjc.domain.repository.MovieRepository
+import com.example.mymovieappjc.domain.usecases.movies.GetCastByMovie
+import com.example.mymovieappjc.domain.usecases.movies.GetNowPlayingMovies
 import com.example.mymovieappjc.domain.usecases.movies.GetPopularMovies
 import com.example.mymovieappjc.domain.usecases.movies.GetSearchMovies
+import com.example.mymovieappjc.domain.usecases.movies.GetTrendingMovies
+import com.example.mymovieappjc.domain.usecases.movies.GetUpcomingMovies
+import com.example.mymovieappjc.domain.usecases.movies.GetVideoByMovie
 import com.example.mymovieappjc.domain.usecases.movies.MovieUseCases
 import com.example.mymovieappjc.utils.Constance.Companion.BASE_URL
 import dagger.Module
@@ -59,7 +64,12 @@ object AppModule {
     ): MovieUseCases{
         return MovieUseCases(
             getPopularMovies = GetPopularMovies(movieRepository),
-            getSearchMovies = GetSearchMovies(movieRepository)
+            getSearchMovies = GetSearchMovies(movieRepository),
+            getTrendingMovies = GetTrendingMovies(movieRepository),
+            getNowPlayingMovies = GetNowPlayingMovies(movieRepository),
+            getUpcomingMovies = GetUpcomingMovies(movieRepository),
+            getCastByMovie = GetCastByMovie(movieRepository),
+            getVideoByMovie = GetVideoByMovie(movieRepository)
         )
     }
 }

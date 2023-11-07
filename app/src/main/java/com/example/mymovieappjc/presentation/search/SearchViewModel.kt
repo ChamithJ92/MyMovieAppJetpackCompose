@@ -22,17 +22,9 @@ class SearchViewModel @Inject constructor(
         mutableStateOf(value = SearchWidgetState.CLOSED)
     val searchWidgetState: State<SearchWidgetState> = _searchWidgetState
 
-//    private val _searchTextState: MutableState<String> =
-//        mutableStateOf(value = "")
-//    val searchTextState: State<String> = _searchTextState
-
     fun updateSearchWidgetState(newValue: SearchWidgetState){
         _searchWidgetState.value = newValue
     }
-
-//    fun updateSearchTextState(newValue: String){
-//        _searchTextState.value = newValue
-//    }
 
     fun onEvent(event: SearchEvent){
         when(event) {
@@ -45,7 +37,7 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-    fun searchMovies(){
+    private fun searchMovies(){
         val movies = movieUseCases.getSearchMovies(
             searchQuery = state.value.searchQuery
         ).cachedIn(viewModelScope)

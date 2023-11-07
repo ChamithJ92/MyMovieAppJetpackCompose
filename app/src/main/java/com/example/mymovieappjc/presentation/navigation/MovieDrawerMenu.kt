@@ -34,7 +34,7 @@ fun MovieDrawerMenu(
 
     val menuList = listOf(
         DrawerMenuData.Divider,
-        DrawerMenuData.Home,
+        DrawerMenuData.HomeScreen,
         DrawerMenuData.TrendingMovies,
         DrawerMenuData.PopularMovies,
         DrawerMenuData.NowPlayingMovies,
@@ -96,7 +96,7 @@ fun MovieDrawerItem(
             .clickable {
                 Log.e("=====", "$item")
                 onItemClick(item)
-                navController.navigate("Detail Screen") {
+                navController.navigate(item.route!!) {
                     launchSingleTop = true
                 }
                 scope.launch {

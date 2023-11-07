@@ -34,7 +34,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.mymovieappjc.domain.model.MovieData
+import com.example.mymovieappjc.domain.model.VideoResponse
 import com.example.mymovieappjc.presentation.search.SearchWidgetState
 import com.example.mymovieappjc.presentation.search.SearchEvent
 import com.example.mymovieappjc.presentation.search.SearchState
@@ -42,154 +45,171 @@ import com.example.mymovieappjc.ui.theme.MyMovieAppJCTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeAppBar(drawerState: DrawerState, scope: CoroutineScope, onSearchClicked: () -> Unit) {
-
-    Box(modifier = Modifier.padding(10.dp)) {
-        Card(modifier = Modifier.requiredHeight(50.dp),) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                IconButton(onClick = {
-                    scope.launch {
-                        drawerState.open()
-                    }
-                }) {
-                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.Black)
-                }
-                Text(text = "Home", modifier = Modifier.weight(2.0f), fontSize = 17.sp, color = Color.Black)
-                IconButton(onClick = {
-                    onSearchClicked()
-                }) {
-                    Icon(
-                        Icons.Default.Search,
-                        contentDescription = "Search Icon",
-                        tint = Color.Black
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchAppBar(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
-    onSearchClicked: () -> Unit
-) {
-    Box(modifier = Modifier.padding(10.dp)) {
-        Card(modifier = Modifier.requiredHeight(50.dp)) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                color = Color.Transparent
-            ) {
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = text,
-                    onValueChange = { onTextChange(it) },
-                    placeholder = {
-                        Text(
-                            text = "Search here..",
-                            modifier = Modifier.alpha(1.0f),
-                            fontSize = 15.sp,
-                            color = Color.Black
-                        )
-                    },
-                    textStyle = TextStyle(fontSize = 18.sp),
-                    singleLine = true,
-                    leadingIcon = {
-                        IconButton(modifier = Modifier.alpha(1.0f), onClick = {}) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search Icon",
-                                tint = Color.Black
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            if (text.isNotEmpty()) {
-                                onTextChange("")
-                            } else {
-                                onCloseClicked()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Close Icon",
-                                tint = Color.Black
-                            )
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            onSearchClicked()
-                        }
-                    ),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                        cursorColor = Color.Black.copy(alpha = 1.0f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    )
-                )
-            }
-        }
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MainAppBar(
-    drawerState: DrawerState,
-    scope: CoroutineScope,
-    onCloseClicked: () -> Unit,
-    onSearchTriggered: () -> Unit,
+fun HomeAppBar(
+    drawerState: DrawerState, scope: CoroutineScope,
+    navigateToSearch: () -> Unit,
     topBarState: MutableState<Boolean>,
-    searchTextState: SearchState,
-    searchWidgetState: SearchWidgetState,
-    event: (SearchEvent) -> Unit
 ) {
+
     if (topBarState.value) {
-        when (searchWidgetState) {
-            SearchWidgetState.CLOSED -> {
-                HomeAppBar(
-                    drawerState = drawerState,
-                    scope = scope,
-                    onSearchClicked = onSearchTriggered
-                )
-            }
-
-            SearchWidgetState.OPENED -> {
-                SearchAppBar(
-                    text = searchTextState.searchQuery,
-                    onTextChange = {event(SearchEvent.UpdateSearchQuery(it))},
-                    onCloseClicked = onCloseClicked,
-                    onSearchClicked = { event(SearchEvent.SearchMovie) }
-                )
-
-                searchTextState.movie?.let {
-                    val movies = it.collectAsLazyPagingItems()
-                    Log.e("=====", ""+ movies)
+        Box(modifier = Modifier.padding(10.dp)) {
+            Card(modifier = Modifier.requiredHeight(50.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    IconButton(onClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }) {
+                        Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.Black)
+                    }
+                    Text(
+                        text = "Home",
+                        modifier = Modifier.weight(2.0f),
+                        fontSize = 17.sp,
+                        color = Color.Black
+                    )
+                    IconButton(onClick = {
+                        navigateToSearch()
+                    }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = "Search Icon",
+                            tint = Color.Black
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun SearchAppBar(
+//    text: String,
+//    onTextChange: (String) -> Unit,
+//    onCloseClicked: () -> Unit,
+//    onSearchClicked: () -> Unit
+//) {
+//    Box(modifier = Modifier.padding(10.dp)) {
+//        Card(modifier = Modifier.requiredHeight(50.dp)) {
+//            Surface(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(50.dp),
+//                color = Color.Transparent
+//            ) {
+//                TextField(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    value = text,
+//                    onValueChange = { onTextChange(it) },
+//                    placeholder = {
+//                        Text(
+//                            text = "Search here..",
+//                            modifier = Modifier.alpha(1.0f),
+//                            fontSize = 15.sp,
+//                            color = Color.Black
+//                        )
+//                    },
+//                    textStyle = TextStyle(fontSize = 18.sp),
+//                    singleLine = true,
+//                    leadingIcon = {
+//                        IconButton(modifier = Modifier.alpha(1.0f), onClick = {}) {
+//                            Icon(
+//                                imageVector = Icons.Default.Search,
+//                                contentDescription = "Search Icon",
+//                                tint = Color.Black
+//                            )
+//                        }
+//                    },
+//                    trailingIcon = {
+//                        IconButton(onClick = {
+//                            if (text.isNotEmpty()) {
+//                                onTextChange("")
+//                            } else {
+//                                onCloseClicked()
+//                            }
+//                        }) {
+//                            Icon(
+//                                imageVector = Icons.Default.Close,
+//                                contentDescription = "Close Icon",
+//                                tint = Color.Black
+//                            )
+//                        }
+//                    },
+//                    keyboardOptions = KeyboardOptions(
+//                        imeAction = ImeAction.Search
+//                    ),
+//                    keyboardActions = KeyboardActions(
+//                        onSearch = {
+//                            onSearchClicked()
+//                        }
+//                    ),
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color.Transparent,
+//                        cursorColor = Color.Black.copy(alpha = 1.0f),
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent,
+//                        disabledIndicatorColor = Color.Transparent
+//                    )
+//                )
+//            }
+//        }
+//    }
+//
+//}
+
+@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun MainAppBar(
+//    drawerState: DrawerState,
+//    scope: CoroutineScope,
+//    onCloseClicked: () -> Unit,
+//    onSearchTriggered: () -> Unit,
+//    topBarState: MutableState<Boolean>,
+//    searchTextState: SearchState,
+//    searchWidgetState: SearchWidgetState,
+//    event: (SearchEvent) -> Unit,
+//    navigateToSearch: (SearchState) -> Unit
+//) {
+//    if (topBarState.value) {
+//        when (searchWidgetState) {
+//            SearchWidgetState.CLOSED -> {
+//                HomeAppBar(
+//                    drawerState = drawerState,
+//                    scope = scope,
+//                    onSearchClicked = onSearchTriggered
+//                )
+//            }
+//
+//            SearchWidgetState.OPENED -> {
+//                SearchAppBar(
+//                    text = searchTextState.searchQuery,
+//                    onTextChange = {event(SearchEvent.UpdateSearchQuery(it))},
+//                    onCloseClicked = onCloseClicked,
+//                    onSearchClicked = {
+//                        event(SearchEvent.SearchMovie)
+//                        navigateToSearch(searchTextState)
+//                    }
+//                )
+
+//                searchTextState.movie?.let {
+//                    val movies =
+//                    Log.e("+++++", ""+ movies)
+//                    //if(movies.itemCount != 0) {
+//                        navigateToSearch(movies)
+//                    //}
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable

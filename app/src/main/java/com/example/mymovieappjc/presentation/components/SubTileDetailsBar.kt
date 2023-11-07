@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,13 +27,14 @@ import com.example.mymovieappjc.R
 fun SubTitleComponentBar(
     subTitle: String,
     midTitle: String,
-    onClick: () -> Unit
+    onClickSeeAll: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 15.dp, top = 12.dp, end = 15.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = subTitle,
@@ -45,7 +47,6 @@ fun SubTitleComponentBar(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth(0.5f)
-                .fillMaxWidth()
                 .height(30.dp)
                 .background(
                     brush = Brush.horizontalGradient(
@@ -66,7 +67,13 @@ fun SubTitleComponentBar(
         }
         ClickableText(
             text = AnnotatedString("See All"),
-            onClick = { onClick }
+            onClick = { onClickSeeAll() },
+            style = TextStyle(
+                fontSize = 13.sp,
+                color = colorResource(id = R.color.txt_col_2),
+                fontStyle = FontStyle.Normal,
+                fontWeight = FontWeight.Medium
+            ),
         )
     }
 

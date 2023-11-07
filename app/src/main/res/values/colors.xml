@@ -23,4 +23,9 @@
 <!--    Divider Colors-->
     <color name="divider_col_2">#04E7F0</color>
 
+    <color name="btn_col">#F44F5D</color>
+
+    <color name="progress_col_one">#EF7E03</color>
+    <color name="progress_col_two">#01686C</color>
+
 </resources>

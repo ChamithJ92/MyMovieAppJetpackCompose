@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 ): ViewModel() {
 
-    var startDestination by mutableStateOf(DrawerMenuData.Home.route)
+    var startDestination by mutableStateOf(DrawerMenuData.HomeScreen.route)
     init {
         startDestination
     }

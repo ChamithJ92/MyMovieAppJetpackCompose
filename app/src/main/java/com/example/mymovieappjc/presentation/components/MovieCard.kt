@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +27,10 @@ import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MovieCard(movieData: LazyPagingItems<MovieData>) {
+fun MovieCard(movieData: LazyPagingItems<MovieData>,
+              onClickDetails: (MovieData) -> Unit) {
 
     val pagerState = rememberPagerState(initialPage = 0)
 
@@ -42,7 +44,10 @@ fun MovieCard(movieData: LazyPagingItems<MovieData>) {
             Card(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
-                    .height(210.dp)
+                    .height(210.dp),
+                onClick = {
+                    onClickDetails(movieData[page]!!)
+                }
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
