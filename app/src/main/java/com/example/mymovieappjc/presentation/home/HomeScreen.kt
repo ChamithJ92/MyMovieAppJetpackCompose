@@ -63,10 +63,10 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(top = MediumPadding7)
             .statusBarsPadding()
+            .padding(top = MediumPadding7)
     ) {
 
         PagerWithEffect(popularMovieData, onClickDetails = { navigateToDetails(it) })
