@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -64,115 +66,127 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .statusBarsPadding()
             .padding(top = MediumPadding7)
     ) {
 
-        PagerWithEffect(popularMovieData, onClickDetails = { navigateToDetails(it) })
-
-        SubTitleComponentBar(
-            subTitle = "Trending",
-            midTitle = "Today",
-            onClickSeeAll = {
-                navController.navigate(route = DrawerMenuData.TrendingMovies.route!!) {
-                    launchSingleTop = true
-                }
-            })
-
-        Divider(
-            modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
-            color = colorResource(id = R.color.divider_col_2)
-        )
-
-        MovieCard(movieData = trendingMovieData,
-            onClickDetails = { navigateToDetails(it) })
-
-        SubTitleComponentBar(
-            subTitle = "Popular",
-            midTitle = "In Theaters",
-            onClickSeeAll = {
-                navController.navigate(route = DrawerMenuData.PopularMovies.route!!) {
-                    launchSingleTop = true
-                }
-            })
-
-        Divider(
-            modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
-            color = colorResource(id = R.color.divider_col_2)
-        )
-
-        MovieCard(movieData = nowPlayingMovieData,
-            onClickDetails = { navigateToDetails(it) })
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = MediumPadding3, top = MediumPadding4, end = MediumPadding3),
-            horizontalArrangement = Arrangement.SpaceBetween
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = "Now Playing",
-                fontSize = 20.sp,
-                color = colorResource(id = R.color.txt_col_1),
-                fontStyle = FontStyle.Normal,
-                fontWeight = FontWeight.Bold
-            )
+            item {
+                PagerWithEffect(popularMovieData, onClickDetails = { navigateToDetails(it) })
 
-            ClickableText(
-                text = AnnotatedString("See All"),
-                onClick = {
-                    navController.navigate(route = DrawerMenuData.NowPlayingMovies.route!!) {
-                        launchSingleTop = true
-                    }
-                },
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    color = colorResource(id = R.color.txt_col_2),
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Medium
-                ),
-            )
-        }
+                SubTitleComponentBar(
+                    subTitle = "Trending",
+                    midTitle = "Today",
+                    onClickSeeAll = {
+                        navController.navigate(route = DrawerMenuData.TrendingMovies.route!!) {
+                            launchSingleTop = true
+                        }
+                    })
 
-        Divider(
-            modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
-            color = colorResource(id = R.color.divider_col_2)
-        )
+                Divider(
+                    modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
+                    color = colorResource(id = R.color.divider_col_2)
+                )
 
-        MovieCard(movieData = upcomingMovieData,
-            onClickDetails = { navigateToDetails(it) })
+                MovieCard(movieData = trendingMovieData,
+                    onClickDetails = { navigateToDetails(it) })
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = MediumPadding3, top = MediumPadding4, end = MediumPadding3),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Upcoming",
-                fontSize = 20.sp,
-                color = colorResource(id = R.color.txt_col_1),
-                fontStyle = FontStyle.Normal,
-                fontWeight = FontWeight.Bold
-            )
+                SubTitleComponentBar(
+                    subTitle = "Popular",
+                    midTitle = "In Theaters",
+                    onClickSeeAll = {
+                        navController.navigate(route = DrawerMenuData.PopularMovies.route!!) {
+                            launchSingleTop = true
+                        }
+                    })
 
-            ClickableText(
-                text = AnnotatedString("See All"),
-                onClick = {
-                    navController.navigate(route = DrawerMenuData.UpcomingMovies.route!!) {
-                        launchSingleTop = true
-                    }
-                },
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    color = colorResource(id = R.color.txt_col_2),
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Medium
-                ),
-            )
+                Divider(
+                    modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
+                    color = colorResource(id = R.color.divider_col_2)
+                )
+
+                MovieCard(movieData = nowPlayingMovieData,
+                    onClickDetails = { navigateToDetails(it) })
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = MediumPadding3,
+                            top = MediumPadding4,
+                            end = MediumPadding3
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Now Playing",
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.txt_col_1),
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    ClickableText(
+                        text = AnnotatedString("See All"),
+                        onClick = {
+                            navController.navigate(route = DrawerMenuData.NowPlayingMovies.route!!) {
+                                launchSingleTop = true
+                            }
+                        },
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = colorResource(id = R.color.txt_col_2),
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.Medium
+                        ),
+                    )
+                }
+
+                Divider(
+                    modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
+                    color = colorResource(id = R.color.divider_col_2)
+                )
+
+                MovieCard(movieData = upcomingMovieData,
+                    onClickDetails = { navigateToDetails(it) })
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = MediumPadding3,
+                            top = MediumPadding4,
+                            end = MediumPadding3
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Upcoming",
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.txt_col_1),
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    ClickableText(
+                        text = AnnotatedString("See All"),
+                        onClick = {
+                            navController.navigate(route = DrawerMenuData.UpcomingMovies.route!!) {
+                                launchSingleTop = true
+                            }
+                        },
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = colorResource(id = R.color.txt_col_2),
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.Medium
+                        ),
+                    )
+                }
+            }
         }
     }
-
 
 }
