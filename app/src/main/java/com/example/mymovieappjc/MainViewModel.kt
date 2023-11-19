@@ -12,8 +12,12 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 ): ViewModel() {
 
+    var splashCondition by mutableStateOf(true)
+        private set
+
     var startDestination by mutableStateOf(DrawerMenuData.HomeScreen.route)
     init {
         startDestination
+        splashCondition = false
     }
 }

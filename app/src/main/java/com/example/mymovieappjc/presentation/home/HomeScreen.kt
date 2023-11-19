@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +42,10 @@ import com.example.mymovieappjc.presentation.components.ErrorUI
 import com.example.mymovieappjc.presentation.components.LoadingUI
 import com.example.mymovieappjc.presentation.components.PagerWithEffect
 import com.example.mymovieappjc.domain.model.MovieData
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding3
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding4
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding7
 import com.example.mymovieappjc.presentation.components.MovieCard
 import com.example.mymovieappjc.presentation.components.SubTitleComponentBar
 import com.example.mymovieappjc.presentation.navigation.DrawerMenuData
@@ -60,6 +65,8 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
+            .padding(top = MediumPadding7)
+            .statusBarsPadding()
     ) {
 
         PagerWithEffect(popularMovieData, onClickDetails = { navigateToDetails(it) })
@@ -74,7 +81,7 @@ fun HomeScreen(
             })
 
         Divider(
-            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+            modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
             color = colorResource(id = R.color.divider_col_2)
         )
 
@@ -91,7 +98,7 @@ fun HomeScreen(
             })
 
         Divider(
-            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+            modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
             color = colorResource(id = R.color.divider_col_2)
         )
 
@@ -101,7 +108,7 @@ fun HomeScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 15.dp, top = 12.dp, end = 15.dp),
+                .padding(start = MediumPadding3, top = MediumPadding4, end = MediumPadding3),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -129,7 +136,7 @@ fun HomeScreen(
         }
 
         Divider(
-            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+            modifier = Modifier.padding(top = MediumPadding1, bottom = MediumPadding1),
             color = colorResource(id = R.color.divider_col_2)
         )
 
@@ -139,7 +146,7 @@ fun HomeScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 15.dp, top = 12.dp, end = 15.dp),
+                .padding(start = MediumPadding3, top = MediumPadding4, end = MediumPadding3),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(

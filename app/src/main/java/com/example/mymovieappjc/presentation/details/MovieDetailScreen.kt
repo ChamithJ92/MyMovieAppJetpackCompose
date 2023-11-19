@@ -299,9 +299,7 @@ fun MovieDetailScreen(
 
             }
         }
-
     }
-
 }
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)

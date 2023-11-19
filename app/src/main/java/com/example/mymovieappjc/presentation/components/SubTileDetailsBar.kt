@@ -22,6 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mymovieappjc.R
+import com.example.mymovieappjc.presentation.Dimens.BoxHeight1
+import com.example.mymovieappjc.presentation.Dimens.MediumCornerShape2
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding3
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding4
 
 @Composable
 fun SubTitleComponentBar(
@@ -32,7 +36,7 @@ fun SubTitleComponentBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 15.dp, top = 12.dp, end = 15.dp),
+            .padding(start = MediumPadding3, top = MediumPadding4, end = MediumPadding3),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -47,14 +51,14 @@ fun SubTitleComponentBar(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth(0.5f)
-                .height(30.dp)
+                .height(BoxHeight1)
                 .background(
                     brush = Brush.horizontalGradient(
                         listOf(
                             colorResource(id = R.color.gradient_col_1),
                             colorResource(id = R.color.gradient_col_2)
                         )
-                    ), shape = RoundedCornerShape(60.dp)
+                    ), shape = RoundedCornerShape(MediumCornerShape2)
                 )
         ) {
             Text(

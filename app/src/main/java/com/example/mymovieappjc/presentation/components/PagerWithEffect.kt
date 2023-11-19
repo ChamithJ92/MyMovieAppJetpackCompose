@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,10 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.mymovieappjc.R
 import com.example.mymovieappjc.domain.model.MovieData
+import com.example.mymovieappjc.presentation.Dimens
+import com.example.mymovieappjc.presentation.Dimens.CardHeight2
+import com.example.mymovieappjc.presentation.Dimens.MediumCornerShape1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding5
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
@@ -49,12 +54,12 @@ fun PagerWithEffect(
         HorizontalPager(
             count = movieData.itemCount,
             state = pagerState,
-            contentPadding = PaddingValues(horizontal = 90.dp),
-            modifier = Modifier.height(270.dp)
+            contentPadding = PaddingValues(horizontal = MediumPadding5),
+            modifier = Modifier.height(CardHeight2)
         ) { page ->
 
-            Card(shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.height(270.dp).graphicsLayer {
+            Card(shape = RoundedCornerShape(MediumCornerShape1),
+                modifier = Modifier.height(CardHeight2).graphicsLayer {
                     val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
 
                     lerp(
@@ -77,12 +82,15 @@ fun PagerWithEffect(
                     onClickDetails(movieData[page]!!)
                 }) {
                 AsyncImage(
+                    modifier = Modifier
+                        .height(CardHeight2),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data("https://image.tmdb.org/t/p/w500" + movieData[page]?.poster_path)
                         .build(),
                     placeholder = painterResource(id = R.drawable.placeholder_image),
                     error = painterResource(id = R.drawable.error_image),
-                    contentDescription = null
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
                 )
             }
 

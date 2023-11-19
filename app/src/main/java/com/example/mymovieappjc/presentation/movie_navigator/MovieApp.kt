@@ -5,6 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -108,10 +109,9 @@ fun MainScreen(
         gesturesEnabled = true,
         drawerContent = {
             val gradientColorList = listOf(
-                Color(0xCE12A2CE),
-                Color(0xC30151A7),
-                Color(0xE81350CA),
-                Color(0xE8023292)
+                Color(0xCE0281A8),
+                Color(0xE8000D5F),
+                Color(0xE8000216)
             )
             ModalDrawerSheet(
                 modifier = Modifier
@@ -153,184 +153,159 @@ fun MainScreen(
                     )
                 },
                 containerColor = Color.Transparent,
-                modifier = Modifier
+                modifier = Modifier.fillMaxSize()
                     .background(
                         createGradientBrush(isVertical = true, colors = gradientColorList)
                     ),
             ) {
-                Navigation(
+                val bottomPadding = it.calculateBottomPadding()
+
+                NavHost(
                     navController = navController,
-                    paddingValues = it,
-                    scope = scope,
-                    topBarState = topBarState,
-                    onCloseClicked = onCloseClicked,
-                    onSearchTriggered = onSearchTriggered,
-                    searchTextState = searchTextState,
-                    searchWidgetState = searchWidgetState,
-                    event = event
-                )
+                    startDestination = DrawerMenuData.HomeScreen.route!!,
+                    modifier = Modifier.padding(bottom = bottomPadding)
+                ) {
+                    composable(route = DrawerMenuData.HomeScreen.route) {
+                        val viewModel: HomeViewModel = hiltViewModel()
+                        val popularMovieData = viewModel.popularMovies.collectAsLazyPagingItems()
+                        val trendingMovieData = viewModel.trendingMovies.collectAsLazyPagingItems()
+                        val nowPlayingMovieData = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
+                        val upcomingMovieData = viewModel.upcomingMovies.collectAsLazyPagingItems()
+                        HomeScreen(
+                            popularMovieData = popularMovieData,
+                            trendingMovieData = trendingMovieData,
+                            nowPlayingMovieData = nowPlayingMovieData,
+                            upcomingMovieData = upcomingMovieData,
+                            navigateToDetails = { movieData ->
+                                navigateToDetails(
+                                    navController = navController,
+                                    movieData = movieData
+                                )
+                            },
+                            navController = navController
+                        )
+                        topBarState.value = true
+                    }
+                    composable(route = DrawerMenuData.TrendingMovies.route!!) {
+                        topBarState.value = false
+                        val viewModel: HomeViewModel = hiltViewModel()
+                        val trendingMovieData = viewModel.trendingMovies.collectAsLazyPagingItems()
+                        TrendingMovies(
+                            trendingMovieData = trendingMovieData,
+                            navigateUp = { navController.navigateUp() },
+                            navigateToDetails = { movieData ->
+                                navigateToDetails(
+                                    navController = navController,
+                                    movieData = movieData
+                                )
+                            }
+                        )
+                    }
+
+                    composable(route = DrawerMenuData.PopularMovies.route!!) {
+                        topBarState.value = false
+                        val viewModel: HomeViewModel = hiltViewModel()
+                        val popularMovieData = viewModel.popularMovies.collectAsLazyPagingItems()
+                        PopularMovies(
+                            popularMovies = popularMovieData,
+                            navigateUp = { navController.navigateUp() },
+                            navigateToDetails = { movieData ->
+                                navigateToDetails(
+                                    navController = navController,
+                                    movieData = movieData
+                                )
+                            }
+                        )
+                    }
+
+                    composable(route = DrawerMenuData.NowPlayingMovies.route!!) {
+                        topBarState.value = false
+                        val viewModel: HomeViewModel = hiltViewModel()
+                        val nowPlayingMovieData = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
+                        NowPlayingMovies(
+                            nowPlayingMovies = nowPlayingMovieData,
+                            navigateUp = { navController.navigateUp() },
+                            navigateToDetails = { movieData ->
+                                navigateToDetails(
+                                    navController = navController,
+                                    movieData = movieData
+                                )
+                            }
+                        )
+                    }
+
+                    composable(route = DrawerMenuData.UpcomingMovies.route!!) {
+                        topBarState.value = false
+                        val viewModel: HomeViewModel = hiltViewModel()
+                        val upcomingMovieData = viewModel.upcomingMovies.collectAsLazyPagingItems()
+                        UpcomingMovies(
+                            upcomingMovies = upcomingMovieData,
+                            navigateUp = { navController.navigateUp() },
+                            navigateToDetails = { movieData ->
+                                navigateToDetails(
+                                    navController = navController,
+                                    movieData = movieData
+                                )
+                            }
+                        )
+                    }
+
+                    composable(route = Route.MovieDetailsScreen.route) { navBackStackEntry ->
+                        topBarState.value = false
+
+                        navController.previousBackStackEntry?.savedStateHandle?.get<MovieData>("movieData")
+                            ?.let { movieData ->
+                                val viewModel: DetailsViewModel = hiltViewModel()
+
+                                MovieDetailScreen(
+                                    movieData = movieData,
+                                    navigateUp = { navController.navigateUp() },
+                                    viewModel = viewModel,
+                                    navigateToVideo = { videoData ->
+
+                                        navigateToVideo(
+                                            navController = navController,
+                                            videoData = videoData
+                                        )
+                                    }
+                                )
+
+                            }
+                    }
+
+                    composable(route = Route.MovieVideoDetailsScreen.route) { navBackStackEntry ->
+                        topBarState.value = false
+                        navController.previousBackStackEntry?.savedStateHandle?.get<VideoResponse>("videoData")
+                            ?.let { videoData ->
+                                MovieVideoScreen(
+                                    videoData = videoData,
+                                    navigateUp = { navController.navigateUp() }
+                                )
+                            }
+                    }
+
+                    composable(route = Route.SearchScreen.route) { navBackStackEntry ->
+                        topBarState.value = false
+
+                        SearchScreen(
+                            navigateUp = { navController.navigateUp() },
+                            scope = scope,
+                            onCloseClicked = onCloseClicked,
+                            onSearchTriggered = onSearchTriggered,
+                            searchTextState = searchTextState,
+                            searchWidgetState = searchWidgetState,
+                            event = event,
+                            navigateToDetails = { movieData ->
+                                navigateToDetails(
+                                    navController = navController,
+                                    movieData = movieData
+                                )
+                            }
+                        )
+                    }
+                }
             }
         })
-}
-
-@SuppressLint("SuspiciousIndentation")
-@Composable
-fun Navigation(
-    navController: NavHostController,
-    paddingValues: PaddingValues,
-    scope: CoroutineScope,
-    topBarState: MutableState<Boolean>,
-    onCloseClicked: () -> Unit,
-    onSearchTriggered: () -> Unit,
-    searchTextState: SearchState,
-    searchWidgetState: SearchWidgetState,
-    event: (SearchEvent) -> Unit
-) {
-
-    NavHost(
-        navController = navController,
-        startDestination = DrawerMenuData.HomeScreen.route!!,
-        modifier = Modifier.padding(paddingValues = paddingValues)
-    ) {
-        composable(route = DrawerMenuData.HomeScreen.route) {
-            val viewModel: HomeViewModel = hiltViewModel()
-            val popularMovieData = viewModel.popularMovies.collectAsLazyPagingItems()
-            val trendingMovieData = viewModel.trendingMovies.collectAsLazyPagingItems()
-            val nowPlayingMovieData = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
-            val upcomingMovieData = viewModel.upcomingMovies.collectAsLazyPagingItems()
-            HomeScreen(
-                popularMovieData = popularMovieData,
-                trendingMovieData = trendingMovieData,
-                nowPlayingMovieData = nowPlayingMovieData,
-                upcomingMovieData = upcomingMovieData,
-                navigateToDetails = { movieData ->
-                    navigateToDetails(
-                        navController = navController,
-                        movieData = movieData
-                    )
-                },
-                navController = navController
-            )
-            topBarState.value = true
-        }
-        composable(route = DrawerMenuData.TrendingMovies.route!!) {
-            topBarState.value = false
-            val viewModel: HomeViewModel = hiltViewModel()
-            val trendingMovieData = viewModel.trendingMovies.collectAsLazyPagingItems()
-            TrendingMovies(
-                trendingMovieData = trendingMovieData,
-                navigateUp = { navController.navigateUp() },
-                navigateToDetails = { movieData ->
-                    navigateToDetails(
-                        navController = navController,
-                        movieData = movieData
-                    )
-                }
-            )
-        }
-
-        composable(route = DrawerMenuData.PopularMovies.route!!) {
-            topBarState.value = false
-            val viewModel: HomeViewModel = hiltViewModel()
-            val popularMovieData = viewModel.popularMovies.collectAsLazyPagingItems()
-            PopularMovies(
-                popularMovies = popularMovieData,
-                navigateUp = { navController.navigateUp() },
-                navigateToDetails = { movieData ->
-                    navigateToDetails(
-                        navController = navController,
-                        movieData = movieData
-                    )
-                }
-            )
-        }
-
-        composable(route = DrawerMenuData.NowPlayingMovies.route!!) {
-            topBarState.value = false
-            val viewModel: HomeViewModel = hiltViewModel()
-            val nowPlayingMovieData = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
-            NowPlayingMovies(
-                nowPlayingMovies = nowPlayingMovieData,
-                navigateUp = { navController.navigateUp() },
-                navigateToDetails = { movieData ->
-                    navigateToDetails(
-                        navController = navController,
-                        movieData = movieData
-                    )
-                }
-            )
-        }
-
-        composable(route = DrawerMenuData.UpcomingMovies.route!!) {
-            topBarState.value = false
-            val viewModel: HomeViewModel = hiltViewModel()
-            val upcomingMovieData = viewModel.upcomingMovies.collectAsLazyPagingItems()
-            UpcomingMovies(
-                upcomingMovies = upcomingMovieData,
-                navigateUp = { navController.navigateUp() },
-                navigateToDetails = { movieData ->
-                    navigateToDetails(
-                        navController = navController,
-                        movieData = movieData
-                    )
-                }
-            )
-        }
-
-        composable(route = Route.MovieDetailsScreen.route) { navBackStackEntry ->
-            topBarState.value = false
-
-            navController.previousBackStackEntry?.savedStateHandle?.get<MovieData>("movieData")
-                ?.let { movieData ->
-                    val viewModel: DetailsViewModel = hiltViewModel()
-
-                    MovieDetailScreen(
-                        movieData = movieData,
-                        navigateUp = { navController.navigateUp() },
-                        viewModel = viewModel,
-                        navigateToVideo = { videoData ->
-
-                            navigateToVideo(
-                                navController = navController,
-                                videoData = videoData
-                            )
-                        }
-                    )
-
-                }
-        }
-
-        composable(route = Route.MovieVideoDetailsScreen.route) { navBackStackEntry ->
-            topBarState.value = false
-            navController.previousBackStackEntry?.savedStateHandle?.get<VideoResponse>("videoData")
-                ?.let { videoData ->
-                    MovieVideoScreen(
-                        videoData = videoData,
-                        navigateUp = { navController.navigateUp() }
-                    )
-                }
-        }
-
-        composable(route = Route.SearchScreen.route) { navBackStackEntry ->
-            topBarState.value = false
-
-            SearchScreen(
-                navigateUp = { navController.navigateUp() },
-                scope = scope,
-                onCloseClicked = onCloseClicked,
-                onSearchTriggered = onSearchTriggered,
-                searchTextState = searchTextState,
-                searchWidgetState = searchWidgetState,
-                event = event,
-                navigateToDetails = { movieData ->
-                    navigateToDetails(
-                        navController = navController,
-                        movieData = movieData
-                    )
-                }
-            )
-        }
-    }
 }
 
 private fun navigateToDetails(navController: NavController, movieData: MovieData) {

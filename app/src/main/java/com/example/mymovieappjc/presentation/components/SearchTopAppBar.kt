@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +41,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.mymovieappjc.domain.model.MovieData
 import com.example.mymovieappjc.domain.model.VideoResponse
+import com.example.mymovieappjc.presentation.Dimens.CardHeight1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding2
 import com.example.mymovieappjc.presentation.search.SearchWidgetState
 import com.example.mymovieappjc.presentation.search.SearchEvent
 import com.example.mymovieappjc.presentation.search.SearchState
@@ -48,24 +53,42 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun SearchTitleAppBar(onBackPressed: () -> Unit = {}, scope: CoroutineScope, onSearchClicked: () -> Unit) {
+fun SearchTitleAppBar(
+    onBackPressed: () -> Unit = {},
+    scope: CoroutineScope,
+    onSearchClicked: () -> Unit
+) {
 
-    Box(modifier = Modifier.padding(10.dp)) {
-        Card(modifier = Modifier.requiredHeight(50.dp),) {
+    Box(
+        modifier = Modifier
+            .padding(
+                MediumPadding1
+            )
+    ) {
+        Card(modifier = Modifier.requiredHeight(CardHeight1)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(MediumPadding2)
             ) {
                 IconButton(onClick = {
                     scope.launch {
                         onBackPressed()
                     }
                 }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Arrow Back", tint = Color.Black)
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Arrow Back",
+                        tint = Color.Black
+                    )
                 }
-                Text(text = "Search Movie", modifier = Modifier.weight(2.0f), fontSize = 17.sp, color = Color.Black)
+                Text(
+                    text = "Search Movie",
+                    modifier = Modifier.weight(2.0f),
+                    fontSize = 17.sp,
+                    color = Color.Black
+                )
                 IconButton(onClick = {
                     onSearchClicked()
                 }) {
@@ -88,12 +111,20 @@ fun SearchTextAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: () -> Unit
 ) {
-    Box(modifier = Modifier.padding(10.dp)) {
-        Card(modifier = Modifier.requiredHeight(50.dp)) {
+
+    val focusManager = LocalFocusManager.current
+
+    Box(
+        modifier = Modifier
+            .padding(
+                MediumPadding1
+            )
+    ) {
+        Card(modifier = Modifier.requiredHeight(CardHeight1)) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(CardHeight1),
                 color = Color.Transparent
             ) {
                 TextField(
@@ -140,7 +171,12 @@ fun SearchTextAppBar(
                     keyboardActions = KeyboardActions(
                         onSearch = {
                             onSearchClicked()
+                            focusManager.clearFocus()
+                        },
+                        onDone = {
+
                         }
+
                     ),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
@@ -167,26 +203,26 @@ fun MainSearchAppBar(
     searchWidgetState: SearchWidgetState,
     event: (SearchEvent) -> Unit
 ) {
-        when (searchWidgetState) {
-            SearchWidgetState.CLOSED -> {
-                SearchTitleAppBar(
-                    onBackPressed = onBackPressed,
-                    scope = scope,
-                    onSearchClicked = onSearchTriggered
-                )
-            }
-
-            SearchWidgetState.OPENED -> {
-                SearchTextAppBar(
-                    text = searchTextState.searchQuery,
-                    onTextChange = {event(SearchEvent.UpdateSearchQuery(it))},
-                    onCloseClicked = onCloseClicked,
-                    onSearchClicked = {
-                        event(SearchEvent.SearchMovie)
-                    }
-                )
-            }
+    when (searchWidgetState) {
+        SearchWidgetState.CLOSED -> {
+            SearchTitleAppBar(
+                onBackPressed = onBackPressed,
+                scope = scope,
+                onSearchClicked = onSearchTriggered
+            )
         }
+
+        SearchWidgetState.OPENED -> {
+            SearchTextAppBar(
+                text = searchTextState.searchQuery,
+                onTextChange = { event(SearchEvent.UpdateSearchQuery(it)) },
+                onCloseClicked = onCloseClicked,
+                onSearchClicked = {
+                    event(SearchEvent.SearchMovie)
+                }
+            )
+        }
+    }
 }
 
 

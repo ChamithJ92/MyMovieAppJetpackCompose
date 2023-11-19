@@ -94,7 +94,6 @@ fun MovieDrawerItem(
             .height(50.dp)
             .padding(top = 16.dp)
             .clickable {
-                Log.e("=====", "$item")
                 onItemClick(item)
                 navController.navigate(item.route!!) {
                     launchSingleTop = true

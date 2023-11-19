@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.mymovieappjc.R
 import com.example.mymovieappjc.domain.model.MovieData
+import com.example.mymovieappjc.presentation.Dimens
+import com.example.mymovieappjc.presentation.Dimens.MediumArrangement1
+import com.example.mymovieappjc.presentation.Dimens.MediumCornerShape1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding2
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding6
+import com.example.mymovieappjc.presentation.Dimens.SmallPadding1
+import com.example.mymovieappjc.presentation.Dimens.SmallPadding2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,16 +43,15 @@ fun MovieList(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(
-                start = 10.dp,
-                top = 5.dp,
-                end = 10.dp,
-                bottom = 0.dp
+                start = MediumPadding1,
+                top = SmallPadding1,
+                end = MediumPadding1
             ),
             content = {
                 items(movies.itemCount) { item ->
                     Card(
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.padding(4.dp),
+                        shape = RoundedCornerShape(MediumCornerShape1),
+                        modifier = Modifier.padding(MediumPadding2),
                         onClick = {
                             onClickDetails(movies[item]!!)
                         }
@@ -54,7 +62,8 @@ fun MovieList(
                                 .build(),
                             placeholder = painterResource(id = R.drawable.placeholder_image),
                             error = painterResource(id = R.drawable.error_image),
-                            contentDescription = null
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit
                         )
                     }
                 }
@@ -93,9 +102,9 @@ fun handlePagingResult(movies: LazyPagingItems<MovieData>): Boolean {
 @Composable
 fun ShimmerEffect() {
     Column {
-        Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(MediumArrangement1)) {
             repeat(10){
-                MovieCardShimmerEffect(modifier = Modifier.padding(horizontal = 20.dp))
+                MovieCardShimmerEffect(modifier = Modifier.padding(horizontal = MediumPadding6))
             }
         }
     }

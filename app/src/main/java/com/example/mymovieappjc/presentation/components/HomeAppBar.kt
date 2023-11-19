@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -38,6 +39,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.mymovieappjc.domain.model.MovieData
 import com.example.mymovieappjc.domain.model.VideoResponse
+import com.example.mymovieappjc.presentation.Dimens.CardHeight1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding1
+import com.example.mymovieappjc.presentation.Dimens.MediumPadding2
 import com.example.mymovieappjc.presentation.search.SearchWidgetState
 import com.example.mymovieappjc.presentation.search.SearchEvent
 import com.example.mymovieappjc.presentation.search.SearchState
@@ -53,13 +57,17 @@ fun HomeAppBar(
 ) {
 
     if (topBarState.value) {
-        Box(modifier = Modifier.padding(10.dp)) {
-            Card(modifier = Modifier.requiredHeight(50.dp)) {
+        Box(
+            modifier = Modifier.padding(
+                MediumPadding1
+            ).statusBarsPadding()
+        ) {
+            Card(modifier = Modifier.requiredHeight(CardHeight1)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp)
+                        .padding(MediumPadding2)
                 ) {
                     IconButton(onClick = {
                         scope.launch {
@@ -88,128 +96,6 @@ fun HomeAppBar(
         }
     }
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun SearchAppBar(
-//    text: String,
-//    onTextChange: (String) -> Unit,
-//    onCloseClicked: () -> Unit,
-//    onSearchClicked: () -> Unit
-//) {
-//    Box(modifier = Modifier.padding(10.dp)) {
-//        Card(modifier = Modifier.requiredHeight(50.dp)) {
-//            Surface(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(50.dp),
-//                color = Color.Transparent
-//            ) {
-//                TextField(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    value = text,
-//                    onValueChange = { onTextChange(it) },
-//                    placeholder = {
-//                        Text(
-//                            text = "Search here..",
-//                            modifier = Modifier.alpha(1.0f),
-//                            fontSize = 15.sp,
-//                            color = Color.Black
-//                        )
-//                    },
-//                    textStyle = TextStyle(fontSize = 18.sp),
-//                    singleLine = true,
-//                    leadingIcon = {
-//                        IconButton(modifier = Modifier.alpha(1.0f), onClick = {}) {
-//                            Icon(
-//                                imageVector = Icons.Default.Search,
-//                                contentDescription = "Search Icon",
-//                                tint = Color.Black
-//                            )
-//                        }
-//                    },
-//                    trailingIcon = {
-//                        IconButton(onClick = {
-//                            if (text.isNotEmpty()) {
-//                                onTextChange("")
-//                            } else {
-//                                onCloseClicked()
-//                            }
-//                        }) {
-//                            Icon(
-//                                imageVector = Icons.Default.Close,
-//                                contentDescription = "Close Icon",
-//                                tint = Color.Black
-//                            )
-//                        }
-//                    },
-//                    keyboardOptions = KeyboardOptions(
-//                        imeAction = ImeAction.Search
-//                    ),
-//                    keyboardActions = KeyboardActions(
-//                        onSearch = {
-//                            onSearchClicked()
-//                        }
-//                    ),
-//                    colors = TextFieldDefaults.textFieldColors(
-//                        containerColor = Color.Transparent,
-//                        cursorColor = Color.Black.copy(alpha = 1.0f),
-//                        focusedIndicatorColor = Color.Transparent,
-//                        unfocusedIndicatorColor = Color.Transparent,
-//                        disabledIndicatorColor = Color.Transparent
-//                    )
-//                )
-//            }
-//        }
-//    }
-//
-//}
-
-@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun MainAppBar(
-//    drawerState: DrawerState,
-//    scope: CoroutineScope,
-//    onCloseClicked: () -> Unit,
-//    onSearchTriggered: () -> Unit,
-//    topBarState: MutableState<Boolean>,
-//    searchTextState: SearchState,
-//    searchWidgetState: SearchWidgetState,
-//    event: (SearchEvent) -> Unit,
-//    navigateToSearch: (SearchState) -> Unit
-//) {
-//    if (topBarState.value) {
-//        when (searchWidgetState) {
-//            SearchWidgetState.CLOSED -> {
-//                HomeAppBar(
-//                    drawerState = drawerState,
-//                    scope = scope,
-//                    onSearchClicked = onSearchTriggered
-//                )
-//            }
-//
-//            SearchWidgetState.OPENED -> {
-//                SearchAppBar(
-//                    text = searchTextState.searchQuery,
-//                    onTextChange = {event(SearchEvent.UpdateSearchQuery(it))},
-//                    onCloseClicked = onCloseClicked,
-//                    onSearchClicked = {
-//                        event(SearchEvent.SearchMovie)
-//                        navigateToSearch(searchTextState)
-//                    }
-//                )
-
-//                searchTextState.movie?.let {
-//                    val movies =
-//                    Log.e("+++++", ""+ movies)
-//                    //if(movies.itemCount != 0) {
-//                        navigateToSearch(movies)
-//                    //}
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Preview(showBackground = true)
 @Composable
