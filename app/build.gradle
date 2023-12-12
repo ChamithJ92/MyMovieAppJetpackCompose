@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.mymovieappjc'
+    namespace 'com.dcdev.mymovieappjc'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.mymovieappjc"
+        applicationId "com.dcdev.mymovieappjc"
         minSdk 24
         targetSdk 34
         versionCode 1
